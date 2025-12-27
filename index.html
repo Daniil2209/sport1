@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Trainer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <button id="login-btn" class="header-btn login-btn">Login / Register</button>
+        <button id="menu-btn" class="header-btn menu-btn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <!-- Side Menu -->
+    <div id="side-menu" class="side-menu hidden">
+        <div class="menu-overlay"></div>
+        <div class="menu-content">
+            <button id="menu-calendar" class="menu-item">Calendar</button>
+            <button id="menu-exercises" class="menu-item">Exercise Selection</button>
+            <button id="menu-account" class="menu-item">My Account</button>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <h2>Login / Register</h2>
+            <div id="login-form" class="auth-form">
+                <input type="email" id="login-email" placeholder="Email" required>
+                <input type="password" id="login-password" placeholder="Password" required>
+                <button id="submit-login" class="btn btn-primary">Login</button>
+                <p class="auth-switch">Don't have an account? <a href="#" id="switch-to-register">Register</a></p>
+            </div>
+            <div id="register-form" class="auth-form hidden">
+                <input type="text" id="register-name" placeholder="Name" required>
+                <input type="email" id="register-email" placeholder="Email" required>
+                <input type="password" id="register-password" placeholder="Password" required>
+                <button id="submit-register" class="btn btn-primary">Register</button>
+                <p class="auth-switch">Already have an account? <a href="#" id="switch-to-login">Login</a></p>
+            </div>
+            <button class="modal-close" id="close-login-modal">&times;</button>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="container">
+        <!-- Exercise View -->
+        <div id="exercise-view" class="view">
+            <div class="camera-container">
+                <video id="video" autoplay playsinline muted></video>
+                <canvas id="canvas"></canvas>
+                <div id="camera-error" class="error-message hidden">
+                    <p>Camera access required to start training</p>
+                </div>
+            </div>
+
+            <div class="hud">
+                <div class="counter-section">
+                    <div class="counter-label" id="exercise-label">Push-ups</div>
+                    <div id="counter" class="counter">0</div>
+                </div>
+
+                <div class="status-section">
+                    <div id="status" class="status"></div>
+                    <div id="feedback" class="feedback"></div>
+                    <div id="hands-status" class="hands-status"></div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="start-btn" class="btn btn-primary">Start</button>
+                <button id="pause-btn" class="btn btn-secondary" disabled>Pause</button>
+                <button id="reset-btn" class="btn btn-secondary">Reset</button>
+            </div>
+        </div>
+
+        <!-- Calendar View -->
+        <div id="calendar-view" class="view hidden">
+            <div class="calendar-container">
+                <h2>30-Day Training Calendar</h2>
+                <div id="calendar-grid" class="calendar-grid"></div>
+                <div id="congratulations" class="congratulations hidden">
+                    <h2>🎉 Congratulations! 🎉</h2>
+                    <p>You've completed 30 days of training!</p>
+                    <button id="start-over-btn" class="btn btn-primary">Start Over</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personal Account View -->
+        <div id="account-view" class="view hidden">
+            <div class="account-container">
+                <h2>My Account</h2>
+                <div class="account-info">
+                    <div class="account-section">
+                        <h3>Profile</h3>
+                        <p><strong>Name:</strong> <span id="account-name"></span></p>
+                        <p><strong>Email:</strong> <span id="account-email"></span></p>
+                    </div>
+                    <div class="account-section">
+                        <h3>Total Statistics</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Push-ups</div>
+                                <div class="stat-value" id="stat-pushups">0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Squats</div>
+                                <div class="stat-value" id="stat-squats">0</div>
+                            </div>
+                            <div class="stat-card plank-stat">
+                                <div class="stat-label">Planks (Total Time)</div>
+                                <div class="stat-value" id="stat-planks">00:00.0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exercise Selection View -->
+        <div id="exercise-selection-view" class="view hidden">
+            <div class="exercise-selection-container">
+                <h2>Select Exercise</h2>
+                <div class="exercise-grid">
+                    <div class="exercise-card" data-exercise="pushups">
+                        <h3>Push-ups</h3>
+                        <p>Build upper body strength</p>
+                    </div>
+                    <div class="exercise-card" data-exercise="squats">
+                        <h3>Squats</h3>
+                        <p>Strengthen legs and core</p>
+                    </div>
+                    <div class="exercise-card" data-exercise="planks">
+                        <h3>Planks</h3>
+                        <p>Core stability training</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Access Denied Message -->
+        <div id="access-denied" class="view hidden">
+            <div class="access-denied-message">
+                <h2>Please Log In or Register</h2>
+                <p>You need to be logged in to access this feature.</p>
+                <button id="access-login-btn" class="btn btn-primary">Login / Register</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MediaPipe Pose -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+    
+    <script src="app.js"></script>
+</body>
+</html>
